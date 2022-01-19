@@ -1,24 +1,13 @@
 # Implementação e treinamento da rede
-import torch
-from torch import nn, optim
+from torch import nn
 
-# Carregamento de Dados
-from torch.utils.data import DataLoader
-from torchvision import datasets
-from torchvision import transforms
-
-# Plots e análises
-from sklearn.metrics import accuracy_score
-import matplotlib.pyplot as plt
-import numpy as np
-import time, os, sys
 
 class VGG16(nn.Module):
 
     def __init__(self, in_size, out_size):
         super(VGG16, self).__init__()
 
-        self.model = nn.Sequential(
+        self.features = nn.Sequential(
             # ConvBlock 1
             nn.Conv2d(in_channels=in_size, out_channels=64, kernel_size=3, stride=1, padding=1), # entrada (b, in_size, 224, 224) saida (b, 64, 224, 224)
             nn.ReLU(),
@@ -60,16 +49,22 @@ class VGG16(nn.Module):
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2, padding=0), # entrada (b, 512, 14, 14) saida (b, 512, 7, 7)
             nn.Flatten(),   # entrada (b, 512, 7, 7) saida (b, 512 * 7 * 7) = (b, 25088)
+        )
 
+        self.out = nn.Sequential(
             # DenseBlock
             nn.Linear(25088, 4096), # entrada (b, 25088) saida (b, 4096)
             nn.ReLU(),
+            nn.Dropout(p=0.5),
             nn.Linear(4096, 4096), # entrada (b, 4096) saida (b, 4096)
             nn.ReLU(),
+            nn.Dropout(p=0.5),
             nn.Linear(4096, out_size), # entrada (b, 4096) saida (b, out_size)
             nn.ReLU(),
             nn.Softmax(dim=-1)
         )
     
-    def forward(self, in_size, out_size, X):
-        return self.model(in_size, out_size)
+    def forward(self, X):
+        feature = self.features(X)
+        output = self.out(feature)
+        return output

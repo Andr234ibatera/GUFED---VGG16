@@ -1,1 +1,1 @@
-emotions = ["Anger", "Disgust", "Fear", "Happiness", "Sadness", "Surprise"]
+emotions = {"Anger": 0, "Disgust": 1, "Fear": 2, "Happiness": 3, "Sadness": 4, "Surprise": 5}

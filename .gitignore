@@ -1,6 +1,7 @@
-/Cropped - Frames desnecessarios retirados
+/GUFED
+/Logs
+/trainset
+/validation
 /Equalized
-/Gaussian Blured
-/Normalized size
 /*.png
 /__pycache__
